@@ -1,0 +1,6 @@
+
+(f f) will result in an error being signalled because eventually this function will try to use 2 as a procedure:
+
+(f f)
+=> (f 2)
+=> (2 2)
