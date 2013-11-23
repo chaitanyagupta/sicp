@@ -1,0 +1,26 @@
+* generic operations with explicit dispatch
+** new types
+*** assign a type tag
+*** write new methods
+*** modify generic methods to take into account the new type
+** new operations
+*** add new operations for each type
+*** define generic procedure (explicitly write dispatch code for each procedure)
+
+* data directed
+** new types
+*** assign a type tag
+*** write package for new type
+** new operations
+*** add procedures to existing packages
+*** assign procedure to lookup table
+*** define generic procedure
+
+* message passing
+** new types
+*** create new constructor
+** new operations
+*** add new operations to each constructor
+*** define generic procedure
+
+* Slightly easier to create new types with message passing, new operations with data directed

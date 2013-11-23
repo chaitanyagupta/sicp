@@ -1,0 +1,5 @@
+'<form> is an abbreviation for the (quote <form>)
+
+i.e. 
+
+''abracadabra => (quote (quote abracadabra)) => '(quote abracadabra)
