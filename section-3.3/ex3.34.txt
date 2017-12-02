@@ -1,0 +1,6 @@
+If a squarer constraint were to work correctly, then setting either
+of its connectors would set an appropriate value on the other one. If
+we use a multiplier though, that is not possible -- it is possible to
+get "b" by setting "a" but not vice versa ('cause a multiplier needs
+values to be set externally on any two of its inputs, which is not
+possible in the example).
