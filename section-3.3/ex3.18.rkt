@@ -1,4 +1,4 @@
-#lang planet neil/sicp
+#lang sicp
 
 (define (contains-cycle? x)
   (define (pair-encountered? pair encountered-pairs)

@@ -1,4 +1,4 @@
-#lang planet neil/sicp
+#lang sicp
 
 ;; Ex 1.8
 

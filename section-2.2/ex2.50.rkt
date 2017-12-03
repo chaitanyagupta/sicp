@@ -1,4 +1,4 @@
-#lang planet neil/sicp
+#lang sicp
 
 (define origin-frame frame-origin)
 (define edge1-frame frame-edge1)

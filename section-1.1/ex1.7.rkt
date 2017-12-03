@@ -1,4 +1,4 @@
-#lang planet neil/sicp
+#lang sicp
 
 ;; Ex 1.7
 ;; Failure examples: (sqrt 1e100), (sqrt 4e-12)

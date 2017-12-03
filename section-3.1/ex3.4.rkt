@@ -1,4 +1,4 @@
-#lang planet neil/sicp
+#lang sicp
 
 (define (make-account balance account-password)
   (define incorrect-password-count 0)

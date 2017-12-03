@@ -1,4 +1,4 @@
-#lang planet neil/sicp
+#lang sicp
 
 (define (cont-frac n d k)
   (define (iter i result)

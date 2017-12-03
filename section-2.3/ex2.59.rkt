@@ -1,4 +1,4 @@
-#lang planet neil/sicp
+#lang sicp
 
 (define (element-of-set? x set)
   (cond ((null? set) false)

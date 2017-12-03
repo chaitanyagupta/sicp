@@ -1,4 +1,4 @@
-#lang planet neil/sicp
+#lang sicp
 
 ;; i is row, j is column
 ;; i,j are 0 indexed

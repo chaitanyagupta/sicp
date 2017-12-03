@@ -1,4 +1,4 @@
-#lang planet neil/sicp
+#lang sicp
 
 (define (zerop n)
   (= n 0))

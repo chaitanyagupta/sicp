@@ -1,4 +1,4 @@
-#lang planet neil/sicp
+#lang sicp
 
 (define (adjoin-set x set)
   (if (null? set) 

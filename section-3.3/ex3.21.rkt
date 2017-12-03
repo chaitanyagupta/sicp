@@ -1,4 +1,4 @@
-#lang planet neil/sicp
+#lang sicp
 
 (define (front-ptr queue) (car queue))
 (define (rear-ptr queue) (cdr queue))

@@ -1,4 +1,4 @@
-#lang planet neil/sicp
+#lang sicp
 
 (define (make-password-checker account-password)
   (lambda (password)

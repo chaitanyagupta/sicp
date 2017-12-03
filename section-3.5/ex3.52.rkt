@@ -1,4 +1,4 @@
-#lang planet neil/sicp
+#lang sicp
 
 (define (stream-car stream) (car stream))
 (define (stream-cdr stream) (force (cdr stream)))
@@ -76,4 +76,4 @@
 ; sum => 210
 ; enm => (1 2 3 4  5  6  7  8  9  10 11 12 13 14  15  16  17  18  19  20 )
 ; seq => (1 3 6 10 15 21 28 36 45 55 66 78 91 105 120 136 153 171 190 210)
-; z   => (      10 15          45 55          105 120             190 210) 
+; z   => (      10 15          45 55          105 120             190 210)

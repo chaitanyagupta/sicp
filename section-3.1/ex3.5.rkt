@@ -1,4 +1,4 @@
-#lang planet neil/sicp
+#lang sicp
 
 (define (monte-carlo trials experiment)
   (define (iter trials-remaining trials-passed)

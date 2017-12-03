@@ -1,4 +1,4 @@
-#lang planet neil/sicp
+#lang sicp
 
 (define (entry tree) (car tree))
 (define (left-branch tree) (cadr tree))

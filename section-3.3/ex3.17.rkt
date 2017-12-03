@@ -1,4 +1,4 @@
-#lang planet neil/sicp
+#lang sicp
 #|
 (define (count-pairs x)
   (let ((encountered-pairs '()))

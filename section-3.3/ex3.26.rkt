@@ -1,4 +1,4 @@
-#lang planet neil/sicp
+#lang sicp
 
 (define (make-tree entry left right)
   (list entry left right))

@@ -1,4 +1,4 @@
-#lang planet neil/sicp
+#lang sicp
 
 (define (product term a next b)
   (if (> a b)

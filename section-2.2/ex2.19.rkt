@@ -1,4 +1,4 @@
-#lang planet neil/sicp
+#lang sicp
 
 (define (cc amount coin-values)
   (cond ((= amount 0) 1)

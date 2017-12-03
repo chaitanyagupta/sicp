@@ -1,4 +1,4 @@
-#lang planet neil/sicp
+#lang sicp
 
 (define (make-leaf symbol weight)
   (list 'leaf symbol weight))

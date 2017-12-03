@@ -1,4 +1,4 @@
-#lang planet neil/sicp
+#lang sicp
 
 (define (full-adder a b c-in sum c-out)
   (let ((s (make-wire))

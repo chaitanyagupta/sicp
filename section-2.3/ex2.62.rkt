@@ -1,4 +1,4 @@
-#lang planet neil/sicp
+#lang sicp
 
 (define (union-set set1 set2)
   (cond

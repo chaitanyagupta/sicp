@@ -1,4 +1,4 @@
-#lang planet neil/sicp
+#lang sicp
 
 (define (right-split painter n)
   (if (= n 0)

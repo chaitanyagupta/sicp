@@ -1,4 +1,4 @@
-#lang planet neil/sicp
+#lang sicp
 
 (define (make-table same-key?)
   (let ((local-table '()))

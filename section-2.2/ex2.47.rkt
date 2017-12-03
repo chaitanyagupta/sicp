@@ -1,4 +1,4 @@
-#lang planet neil/sicp
+#lang sicp
 
 (define (make-frame origin edge1 edge2)
   (list origin edge1 edge2))

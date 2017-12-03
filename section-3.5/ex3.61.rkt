@@ -1,4 +1,4 @@
-#lang planet neil/sicp
+#lang sicp
 
 (define (stream-car stream) (car stream))
 (define (stream-cdr stream) (force (cdr stream)))

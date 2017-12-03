@@ -1,4 +1,4 @@
-#lang planet neil/sicp
+#lang sicp
 
 (define (parity x)
   (remainder x 2))

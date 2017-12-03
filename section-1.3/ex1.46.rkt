@@ -1,4 +1,4 @@
-#lang planet neil/sicp
+#lang sicp
 
 (define (iterative-improvement good-enough? improve)
   (lambda (guess)

@@ -1,4 +1,4 @@
-#lang planet neil/sicp
+#lang sicp
 
 ;; left to right
 (define (list-of-values exps env)

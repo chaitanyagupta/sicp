@@ -1,4 +1,4 @@
-#lang planet neil/sicp
+#lang sicp
 
 (define (split first-op second-op)
   (define (split-op painter n)

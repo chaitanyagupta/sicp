@@ -1,4 +1,4 @@
-#lang planet neil/sicp
+#lang sicp
 
 (define (last-pair x)
   (if (null? (cdr x))

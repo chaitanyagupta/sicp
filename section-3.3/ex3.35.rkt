@@ -1,4 +1,4 @@
-#lang planet neil/sicp
+#lang sicp
 
 (define (for-each-except exception procedure list)
   (define (loop items)

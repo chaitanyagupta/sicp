@@ -1,4 +1,4 @@
-#lang planet neil/sicp
+#lang sicp
 
 (define (filtered-accumulate combiner filter null-value term a next b)
   (define (iter a result)

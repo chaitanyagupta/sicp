@@ -1,4 +1,4 @@
-#lang planet neil/sicp
+#lang sicp
 
 (define (or-gate a1 a2 output)
   (define (or-action-procedure)
