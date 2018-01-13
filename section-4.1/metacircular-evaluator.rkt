@@ -20,6 +20,7 @@
         ((or? exp) (eval-or exp env))
         ((let? exp) (eval (let->combination exp) env))
         ((let*? exp) (eval (let*->nested-lets exp) env))
+        ((while? exp) (eval (while->combination exp) env))
         ((application? exp)
          (apply-m (eval (operator exp) env)
                   (list-of-values (operands exp) env)))
@@ -31,11 +32,11 @@
          (apply-primitive-procedure procedure arguments))
         ((compound-procedure? procedure)
          (eval-sequence
-           (procedure-body procedure)
-           (extend-environment
-             (procedure-parameters procedure)
-             arguments
-             (procedure-environment procedure))))
+          (procedure-body procedure)
+          (extend-environment
+           (procedure-parameters procedure)
+           arguments
+           (procedure-environment procedure))))
         (else
          (error
           "Unknown procedure type -- APPLY" procedure))))
@@ -64,8 +65,8 @@
 
 (define (eval-definition exp env)
   (define-variable! (definition-variable exp)
-                    (eval (definition-value exp) env)
-                    env)
+    (eval (definition-value exp) env)
+    env)
   'ok)
 
 (define (self-evaluating? exp)
@@ -363,3 +364,16 @@
                       (let-body exp)
                       (list (transform (cdr clauses)))))))
   (transform (let-clauses exp)))
+
+(define (while? exp) (tagged-list? exp 'while))
+(define (while-predicate exp) (cadr exp))
+(define (while-body exp) (cddr exp))
+
+(define (while->combination exp)
+  (let ((f (make-lambda (list 'gensym-f)
+                        (list (make-if (while-predicate exp)
+                                       (append (list 'begin)
+                                               (while-body exp)
+                                               (list '(gensym-f gensym-f)))
+                                       'false)))))
+    (list f f)))
