@@ -1,26 +1,49 @@
 #lang sicp
 
+(define (make-table)
+  (let ((local-table (list '*table*)))
+    (define (lookup key-1 key-2)
+      (let ((subtable (assoc key-1 (cdr local-table))))
+        (if subtable
+            (let ((record (assoc key-2 (cdr subtable))))
+              (if record
+                  (cdr record)
+                  false))
+            false)))
+    (define (insert! key-1 key-2 value)
+      (let ((subtable (assoc key-1 (cdr local-table))))
+        (if subtable
+            (let ((record (assoc key-2 (cdr subtable))))
+              (if record
+                  (set-cdr! record value)
+                  (set-cdr! subtable
+                            (cons (cons key-2 value)
+                                  (cdr subtable)))))
+            (set-cdr! local-table
+                      (cons (list key-1
+                                  (cons key-2 value))
+                            (cdr local-table)))))
+      'ok)
+    (define (dispatch m)
+      (cond ((eq? m 'lookup-proc) lookup)
+            ((eq? m 'insert-proc!) insert!)
+            (else (error "Unknown operation -- TABLE" m))))
+    dispatch))
+
+(define definitions-table (make-table))
+(define get-def (definitions-table 'lookup-proc))
+(define put-def (definitions-table 'insert-proc!))
+
 (define apply-in-underlying-scheme apply)
 
 (define (eval exp env)
+  (define exp-definition false)
+  (define (has-definition? exp)
+    (set! exp-definition (get-def 'eval (car exp)))
+    exp-definition)
   (cond ((self-evaluating? exp) exp)
         ((variable? exp) (lookup-variable-value exp env))
-        ((quoted? exp) (text-of-quotation exp))
-        ((assignment? exp) (eval-assignment exp env))
-        ((definition? exp) (eval-definition exp env))
-        ((if? exp) (eval-if exp env))
-        ((lambda? exp)
-         (make-procedure (lambda-parameters exp)
-                         (lambda-body exp)
-                         env))
-        ((begin? exp) 
-         (eval-sequence (begin-actions exp) env))
-        ((cond? exp) (eval (cond->if exp) env))
-        ((and? exp) (eval (and->if exp) env))
-        ((or? exp) (eval-or exp env))
-        ((let? exp) (eval (let->combination exp) env))
-        ((let*? exp) (eval (let*->nested-lets exp) env))
-        ((while? exp) (eval (while->combination exp) env))
+        ((has-definition? exp) (exp-definition exp env))
         ((application? exp)
          (apply-m (eval (operator exp) env)
                   (list-of-values (operands exp) env)))
@@ -51,23 +74,29 @@
   (if (true? (eval (if-predicate exp) env))
       (eval (if-consequent exp) env)
       (eval (if-alternative exp) env)))
+(put-def 'eval 'if eval-if)
 
 (define (eval-sequence exps env)
   (cond ((last-exp? exps) (eval (first-exp exps) env))
         (else (eval (first-exp exps) env)
               (eval-sequence (rest-exps exps) env))))
+(put-def 'eval 'begin
+         (lambda (exp env)
+           (eval-sequence (begin-actions exp) env)))
 
 (define (eval-assignment exp env)
   (set-variable-value! (assignment-variable exp)
                        (eval (assignment-value exp) env)
                        env)
   'ok)
+(put-def 'eval 'set! eval-assignment)
 
 (define (eval-definition exp env)
   (define-variable! (definition-variable exp)
     (eval (definition-value exp) env)
     env)
   'ok)
+(put-def 'eval 'define eval-definition)
 
 (define (self-evaluating? exp)
   (cond ((number? exp) true)
@@ -76,18 +105,14 @@
 
 (define (variable? exp) (symbol? exp))
 
-(define (quoted? exp)
-  (tagged-list? exp 'quote))
-
-(define (text-of-quotation exp) (cadr exp))
+(define (text-of-quotation exp env) (cadr exp))
+(put-def 'eval 'quote text-of-quotation)
 
 (define (tagged-list? exp tag)
   (if (pair? exp)
       (eq? (car exp) tag)
       false))
 
-(define (assignment? exp)
-  (tagged-list? exp 'set!))
 (define (assignment-variable exp) (cadr exp))
 (define (assignment-value exp) (caddr exp))
 
@@ -140,7 +165,9 @@
 (define (first-operand ops) (car ops))
 (define (rest-operands ops) (cdr ops))
 
-(define (cond? exp) (tagged-list? exp 'cond))
+(put-def 'eval 'cond
+         (lambda (exp env)
+           (eval (cond->if exp) env)))
 (define (cond-clauses exp) (cdr exp))
 (define (cond-else-clause? clause)
   (eq? (cond-predicate clause) 'else))
@@ -177,6 +204,11 @@
 
 (define (make-procedure parameters body env)
   (list 'procedure parameters body env))
+(put-def 'eval 'lambda
+         (lambda (exp env)
+           (make-procedure (lambda-parameters exp)
+                           (lambda-body exp)
+                           env)))
 (define (compound-procedure? p)
   (tagged-list? p 'procedure))
 (define (procedure-parameters p) (cadr p))
@@ -310,10 +342,8 @@
 
 (define the-global-environment (setup-environment))
 
-(define (and? exp) (tagged-list? exp 'and))
 (define (and-expressions exp) (cdr exp))
 
-(define (or? exp) (tagged-list? exp 'or))
 (define (or-expressions exp) (cdr exp))
 
 (define (and->if exp)
@@ -322,6 +352,9 @@
           ((null? (cdr exp)) (car exp))
           (else (make-if (car exp) (transform (cdr exp)) 'false))))
   (transform (and-expressions exp)))
+(put-def 'eval 'and
+         (lambda (exp env)
+           (eval (and->if exp) env)))
 
 ;; Problem with this one is double evaluation
 (define (or->if exp)
@@ -338,8 +371,8 @@
         (let ((value (eval (car exp) env)))
           (if value value (evaluate (cdr exp))))))
   (evaluate (or-expressions exp)))
+(put-def 'eval 'or eval-or)
 
-(define (let? exp) (tagged-list? exp 'let))
 (define (let-clauses exp) (cadr exp))
 (define (let-variable clause) (car clause))
 (define (let-value clause) (cadr clause))
@@ -350,11 +383,13 @@
          (values (map let-value clauses)))
     (cons (make-lambda variables (let-body exp))
           values)))
+(put-def 'eval 'let
+         (lambda (exp env)
+           (eval (let->combination exp) env)))
 
 (define (make-let clauses body)
   (cons 'let (cons clauses body)))
 
-(define (let*? exp) (tagged-list? exp 'let*))
 (define (let*->nested-lets exp)
   (define (transform clauses)
     (if (null? clauses)
@@ -364,8 +399,10 @@
                       (let-body exp)
                       (list (transform (cdr clauses)))))))
   (transform (let-clauses exp)))
+(put-def 'eval 'let*
+         (lambda (exp env)
+           (eval (let*->nested-lets exp) env)))
 
-(define (while? exp) (tagged-list? exp 'while))
 (define (while-predicate exp) (cadr exp))
 (define (while-body exp) (cddr exp))
 
@@ -377,3 +414,6 @@
                                                (list '(gensym-f gensym-f)))
                                        'false)))))
     (list f f)))
+(put-def 'eval 'while
+         (lambda (exp env)
+           (eval (while->combination exp) env)))
