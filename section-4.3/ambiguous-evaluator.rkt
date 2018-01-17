@@ -352,6 +352,10 @@
     (define-variable! 'false false initial-env)
     initial-env))
 
+(define (display-object object)
+  (newline)
+  (user-print object))
+
 (define (primitive-procedure? proc)
   (tagged-list? proc 'primitive))
 
@@ -361,6 +365,8 @@
   (list (list 'car car)
         (list 'cdr cdr)
         (list 'cons cons)
+        (list 'set-car! set-car!)
+        (list 'set-cdr! set-cdr!)
         (list 'eq? eq?)
         (list 'list list)
         (list 'null? null?)
@@ -377,7 +383,8 @@
         (list '<= <=)
         (list '>= >=)
         (list '> >)
-        (list 'error error)))
+        (list 'error error)
+        (list 'display display-object)))
 
 (define (primitive-procedure-names)
   (map car
