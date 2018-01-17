@@ -9,7 +9,7 @@
   (if (not p) (amb)))
 
 (define (an-integer-between a b)
-  (require (< a b))
+  (require (<= a b))
   (amb a (an-integer-between (+ a 1) b)))
 
 (define (a-pythagorean-triple-between low high)

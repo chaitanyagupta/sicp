@@ -15,7 +15,7 @@
   (amb n (an-integer-starting-from (+ n 1))))
 
 (define (an-integer-between a b)
-  (require (< a b))
+  (require (<= a b))
   (amb a (an-integer-between (+ a 1) b)))
 
 (define (a-pythagorean-triple low)
