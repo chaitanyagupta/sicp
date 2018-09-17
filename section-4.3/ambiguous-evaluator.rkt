@@ -22,6 +22,7 @@
         ((let*? exp) (analyze (let*->nested-lets exp)))
         ((while? exp) (analyze (while->combination exp)))
         ((amb? exp) (analyze-amb exp))
+        ((ramb? exp) (analyze-ramb exp))
         ((application? exp) (analyze-application exp))
         (else
          (error "Unknown expression type -- ANALYZE" exp))))
@@ -519,3 +520,38 @@
                                                (list '(gensym-f gensym-f)))
                                        'false)))))
     (list f f)))
+
+(define (ramb? exp) (tagged-list? exp 'ramb))
+(define (ramb-choices exp) (cdr exp))
+
+(define (remove item list)
+  (cond ((null? list) '())
+        ((eq? item (car list)) (remove item (cdr list)))
+        (else (cons (car list) (remove item (cdr list))))))
+
+(define (copy-list list)
+  (append list '()))
+
+(define (random-element list)
+  (let ((index (random (length list))))
+    (define (iter list n)
+      (cond ((null? list) (error "Got an empty list"))
+            ((= n index) (car list))
+            (else (iter (cdr list) (+ n 1)))))
+    (iter list 0)))
+
+(define (analyze-ramb exp)
+  (let ((cprocs (map analyze (ramb-choices exp))))
+    (lambda (env succeed fail)
+      (let ((choices (copy-list cprocs)))
+        (define (next-choice!)
+          (let ((choice (random-element choices)))
+            (set! choices (remove choice choices))
+            choice))
+        (define (try-next)
+          (if (null? choices)
+              (fail)
+              ((next-choice!) env
+                              succeed
+                              (lambda () (try-next)))))
+        (try-next)))))
